@@ -1,5 +1,5 @@
 package com.meritamerica.assignment4;
 
-public class WithdrawTransaction extends Exception{
+public class WithdrawTransaction extends Transaction {
 
 }

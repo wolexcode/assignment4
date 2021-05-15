@@ -15,7 +15,7 @@ public abstract class Transaction {
     String RejectionReason;
     boolean processed;
     
-    Transaction (BankAccount sourceAccount, BankAccount targetAccount, double Amount, java.util.Date transactionDate) {
+    Transaction(BankAccount sourceAccount, BankAccount targetAccount, double Amount, java.util.Date transactionDate) {
     	SourceAccount = sourceAccount;
     	TargetAccount = targetAccount;
     	this.Amount = Amount;
@@ -92,7 +92,16 @@ public abstract class Transaction {
 		double Amount = Double.parseDouble(input[2]);
 		java.util.Date accountOpenedOn = new SimpleDateFormat("dd/MM/yyyy").parse(input[3]);
 		
-		return new Transaction(sourceAccount, targetAccount, Amount, accountOpenedOn);
+		if (sourceAccount != null) {
+			return new TransferTransaction(sourceAccount, targetAccount, Amount, accountOpenedOn);
+		}
+		if (Amount > 0) {
+			DepositTransaction transaction = new DepositTransaction(targetAccount, Amount);
+			transaction.setTransactionDate(accountOpenedOn);
+			return transaction;
+			
+		}
+		return new WithdrawTransaction(sourceAccount, targetAccount, Amount, accountOpenedOn);
 	
 	}
 	public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException;
