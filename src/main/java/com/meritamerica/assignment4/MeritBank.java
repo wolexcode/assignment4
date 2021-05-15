@@ -203,4 +203,23 @@ public class MeritBank {
 		}
 		return out;
 	}
+	
+	public static BankAccount getBankAccount(long accountId) {
+		for(AccountHolder a: accounts) {
+			for (CheckingAccount ch: a.getCheckingAccounts()) {
+				if (accountId ==ch.getAccountNumber()) return ch;
+				
+			}
+		
+			for (SavingsAccount ch: a.getSavingsAccounts()) {
+				if (accountId ==ch.getAccountNumber()) return ch;
+				
+			}
+			for (CDAccount ch: a.getCDAccounts()) {
+				if (accountId ==ch.getAccountNumber()) return ch;
+				
+			}
+		}
+		return null;
+	}
 }

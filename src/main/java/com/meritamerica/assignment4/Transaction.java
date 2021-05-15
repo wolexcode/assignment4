@@ -1,6 +1,7 @@
 package com.meritamerica.assignment4;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public abstract class Transaction {
@@ -13,6 +14,13 @@ public abstract class Transaction {
     java.util.Date TransactionDate;
     String RejectionReason;
     boolean processed;
+    
+    Transaction (BankAccount sourceAccount, BankAccount targetAccount, double Amount, java.util.Date transactionDate) {
+    	SourceAccount = sourceAccount;
+    	TargetAccount = targetAccount;
+    	this.Amount = Amount;
+    	TransactionDate = transactionDate;
+    }
     
 	
 	public BankAccount getSourceAccount() {
@@ -75,8 +83,17 @@ public abstract class Transaction {
 	}
 	
 	
-	public static Transaction readFromString(String transactionDataString) {
+	public static Transaction readFromString(String transactionDataString) throws ParseException {
+		String[] input = transactionDataString.split(",");
+		long sourceAccountId = Long.parseLong(input[0]);
+		BankAccount sourceAccount = MeritBank.getBankAccount(sourceAccountId);
+		long targetAccountId = Long.parseLong(input[1]);
+		BankAccount targetAccount = MeritBank.getBankAccount(targetAccountId);
+		double Amount = Double.parseDouble(input[2]);
+		java.util.Date accountOpenedOn = new SimpleDateFormat("dd/MM/yyyy").parse(input[3]);
 		
+		return new Transaction(sourceAccount, targetAccount, Amount, accountOpenedOn);
+	
 	}
 	public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException;
 		
