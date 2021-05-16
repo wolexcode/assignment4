@@ -1,7 +1,5 @@
 package com.meritamerica.assignment4;
 
-import java.util.Arrays;
-
 
 public class AccountHolder implements Comparable<AccountHolder>   {
 	private String firstName;
@@ -53,21 +51,23 @@ public class AccountHolder implements Comparable<AccountHolder>   {
 		this.ssn = ssn;
 	}
 	
-	public CheckingAccount addCheckingAccount(double openingBalance) {
+	public CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException {
 		if (openingBalance+this.getCheckingBalance()+this.getSavingsBalance()<combinedLimit) {
 			CheckingAccount[] tmp = new CheckingAccount[checkAccounts.length+1];
 			for (int i = 0; i<checkAccounts.length; i++) {
 				tmp[i] = checkAccounts[i];
 			}
 			CheckingAccount newAccount = new CheckingAccount(openingBalance);
+			Transaction tmpTransaction = new DepositTransaction(newAccount,openingBalance);
+			newAccount.addTransaction(tmpTransaction);
 			tmp[checkAccounts.length] = newAccount;
 			checkAccounts = tmp;
 			return newAccount;
 		}
-		return null;
+		else throw new ExceedsCombinedBalanceLimitException();
 	}
 	
-	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) {
+	public CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException {
 		if (checkingAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<combinedLimit && checkingAccount!=null) {
 			CheckingAccount[] tmp = new CheckingAccount[checkAccounts.length+1];
 			for (int i = 0; i<checkAccounts.length; i++) {
@@ -77,7 +77,7 @@ public class AccountHolder implements Comparable<AccountHolder>   {
 			checkAccounts = tmp;
 			return checkingAccount;
 		}
-		return null;
+		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
 	public CheckingAccount[] getCheckingAccounts() {
@@ -96,21 +96,23 @@ public class AccountHolder implements Comparable<AccountHolder>   {
 		return tmpTotal;
 	}
 	
-	public SavingsAccount addSavingsAccount(double openingBalance) {
+	public SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException {
 		if (openingBalance+this.getCheckingBalance()+this.getSavingsBalance()<combinedLimit) {
 			SavingsAccount[] tmp = new SavingsAccount[saveAccounts.length+1];
 			for (int i = 0; i<saveAccounts.length; i++) {
 				tmp[i] = saveAccounts[i];
 			}
 			SavingsAccount newAccount = new SavingsAccount(openingBalance);
+			Transaction tmpTransaction = new DepositTransaction(newAccount,openingBalance);
+			newAccount.addTransaction(tmpTransaction);
 			tmp[saveAccounts.length] = newAccount;
 			saveAccounts = tmp;
 			return newAccount;
 		}
-		return null;
+		else throw new ExceedsCombinedBalanceLimitException();
 	}
 	
-	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) {
+	public SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException {
 		if (savingsAccount.getBalance()+this.getCheckingBalance()+this.getSavingsBalance()<combinedLimit && savingsAccount!=null) {
 			SavingsAccount[] tmp = new SavingsAccount[saveAccounts.length+1];
 			for (int i = 0; i<saveAccounts.length; i++) {
@@ -120,7 +122,7 @@ public class AccountHolder implements Comparable<AccountHolder>   {
 			saveAccounts = tmp;
 			return savingsAccount;
 		}
-		return null;
+		else throw new ExceedsCombinedBalanceLimitException();
 	}
 
 	public SavingsAccount[] getSavingsAccounts() {
@@ -141,11 +143,13 @@ public class AccountHolder implements Comparable<AccountHolder>   {
 	
 	public CDAccount addCDAccount(CDOffering offering, double openingBalance) {
 		if (offering!=null) {
+			CDAccount newAccount = new CDAccount(offering, openingBalance);
+			Transaction tmpTransaction = new DepositTransaction(newAccount,openingBalance);
+			newAccount.addTransaction(tmpTransaction);
 			CDAccount[] tmp = new CDAccount[cdAccounts.length+1];
 			for (int i = 0; i<cdAccounts.length; i++) {
 				tmp[i] = cdAccounts[i];
 			}
-			CDAccount newAccount = new CDAccount(offering, openingBalance);
 			tmp[cdAccounts.length] = newAccount;
 			cdAccounts = tmp;
 			return newAccount;

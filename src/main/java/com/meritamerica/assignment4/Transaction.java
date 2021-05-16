@@ -6,62 +6,64 @@ import java.text.SimpleDateFormat;
 
 public abstract class Transaction {
 
-
-	
-	BankAccount SourceAccount;
-	BankAccount TargetAccount;
-    double Amount;
-    java.util.Date TransactionDate;
-    String RejectionReason;
-    boolean processed;
+	private BankAccount sourceAccount;
+	private BankAccount targetAccount;
+	private double amount;
+	private java.util.Date transactionDate;
+	private String rejectionReason;
+	private boolean processed;
+	private static final double FRAUD_LIMIT = 1000;
     
-    Transaction(BankAccount sourceAccount, BankAccount targetAccount, double Amount, java.util.Date transactionDate) {
-    	SourceAccount = sourceAccount;
-    	TargetAccount = targetAccount;
-    	this.Amount = Amount;
-    	TransactionDate = transactionDate;
+    Transaction(BankAccount sourceAccount, BankAccount targetAccount, double amount, java.util.Date transactionDate) {
+    	this.sourceAccount = sourceAccount;
+    	this.targetAccount = targetAccount;
+    	this.amount = amount;
+    	this.transactionDate = transactionDate;
     }
     
+    public double getFraudLimit() {
+    	return FRAUD_LIMIT;
+    }
 	
 	public BankAccount getSourceAccount() {
-		return SourceAccount;
+		return sourceAccount;
 		
 	}
 	public void setSourceAccount(BankAccount sourceAccount) {
-		SourceAccount = sourceAccount;
+		this.sourceAccount = sourceAccount;
 		
 	}
 	public BankAccount getTargetAccount() {
-		return TargetAccount;
+		return targetAccount;
 		
 	}
 	public void setTargetAccount(BankAccount targetAccount) {
-		TargetAccount = targetAccount;
+		this.targetAccount = targetAccount;
 		
 	}
 	public double getAmount() {
-		return Amount;
+		return amount;
 		
 	}
 	public void setAmount(double amount) {
-		Amount = amount;
+		this.amount = amount;
 		
 	}
 	public java.util.Date getTransactionDate() {
-		return TransactionDate;
+		return transactionDate;
 		
 	}
 	public void setTransactionDate(java.util.Date date) {
-		TransactionDate = date;
+		this.transactionDate = date;
 		
 	}
 	public String writeToString() {
 		StringBuilder result = new StringBuilder();
 		
-		if  (SourceAccount != null) {
+		if  (sourceAccount != null) {
 			
 			//to add something to a StringBuilder we use ".append"
-			result.append(SourceAccount.getAccountNumber());
+			result.append(sourceAccount.getAccountNumber());
 				
 		}
 		
@@ -71,12 +73,12 @@ public abstract class Transaction {
 		}
 		result.append(",");
 		
-		result.append(TargetAccount.getAccountNumber());
+		result.append(targetAccount.getAccountNumber());
 		result.append(",");
-		result.append(Amount);
+		result.append(amount);
 		result.append(",");
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		result.append(df.format(TransactionDate));
+		result.append(df.format(transactionDate));
 		
 		return result.toString();
 		
@@ -120,11 +122,11 @@ public abstract class Transaction {
 		processed = isProcessed;
 	}
 	public String getRejectionReason() {
-		return RejectionReason;
+		return rejectionReason;
 		
 	}
 	public void setRejectionReason(String reason) {
-		RejectionReason = reason;
+		rejectionReason = reason;
 		
 	}
 

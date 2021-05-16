@@ -3,15 +3,16 @@ package com.meritamerica.assignment4;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BankAccount {
+public class BankAccount {
 
 	private double balance;
 	private double interestRate = 0;
 	private long accountNumber;
 	private java.util.Date accountOpenedOn;
-	private List<Transaction> arr;
+	private List<Transaction> transactions = new ArrayList<Transaction>();
 	
 	
 	public BankAccount(double openingBalance, double interestRate, java.util.Date accountOpenedOn) {
@@ -101,14 +102,10 @@ public abstract class BankAccount {
 
 
 	public void addTransaction(Transaction transaction) {
-		arr.add(transaction);
+		transactions.add(transaction);
 	}
 	public List<Transaction> getTransactions() {
-		return arr;
-		
+		return transactions;
 	}
 
-
-	
-	
 }

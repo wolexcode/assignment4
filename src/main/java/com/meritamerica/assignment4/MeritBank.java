@@ -1,15 +1,13 @@
 package com.meritamerica.assignment4;
 
 import java.io.*;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Random;
 
 public class MeritBank {
 	
 	private static AccountHolder[] accounts = new AccountHolder[0];
 	private static CDOffering[] cdOfferings = new CDOffering[0];
 	private static long nextAccountNumber = 1;
+	private static FraudQueue fraudQueue = new FraudQueue();
 	
 	public static void addAccountHolder(AccountHolder accountHolder) {
 		AccountHolder[] tmp = new AccountHolder[accounts.length+1];
@@ -161,17 +159,35 @@ public class MeritBank {
 				
 				int checkingNumber = Integer.parseInt(in.readLine());
 				for (int j = 0; j < checkingNumber; j++) {
-					ah1.addCheckingAccount(CheckingAccount.readFromString(in.readLine()));
+					CheckingAccount cAccount = CheckingAccount.readFromString(in.readLine());
+					int transactionNumber = Integer.parseInt(in.readLine());
+					for (int k = 0; k < transactionNumber; k++) {
+						Transaction tmptrans = Transaction.readFromString(in.readLine());
+						cAccount.addTransaction(tmptrans);
+					}
+					ah1.addCheckingAccount(cAccount);
 				}
 				
 				int savingNumber = Integer.parseInt(in.readLine());
 				for (int j = 0; j < savingNumber; j++) {
-					ah1.addSavingsAccount(SavingsAccount.readFromString(in.readLine()));
+					SavingsAccount sAccount = SavingsAccount.readFromString(in.readLine());
+					int transactionNumber = Integer.parseInt(in.readLine());
+					for (int k = 0; k < transactionNumber; k++) {
+						Transaction tmptrans = Transaction.readFromString(in.readLine());
+						sAccount.addTransaction(tmptrans);
+					}
+					ah1.addSavingsAccount(sAccount);
 				}
 				
 				int cdNumber = Integer.parseInt(in.readLine());
 				for (int j = 0; j < cdNumber; j++) {
-					ah1.addCDAccount(CDAccount.readFromString(in.readLine()));
+					CDAccount cdAccount = CDAccount.readFromString(in.readLine());
+					int transactionNumber = Integer.parseInt(in.readLine());
+					for (int k = 0; k < transactionNumber; k++) {
+						Transaction tmptrans = Transaction.readFromString(in.readLine());
+						cdAccount.addTransaction(tmptrans);
+					}
+					ah1.addCDAccount(cdAccount);
 				}
 				addAccountHolder(ah1);
 			}
@@ -236,33 +252,17 @@ public class MeritBank {
 	}
 	
 	public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException {
-		if (transaction.getAmount()<0) {
-			
-			double withdrawAmount = -transaction.getAmount();
-			
-			if (withdrawAmount>transaction.getTargetAccount().getBalance()) {
-			throw	new ExceedsAvailableBalanceException();
-			
-			}	
-		
+		try {
+			transaction.process();
+			return true;
 		}
-		else if (transaction.getAmount()>1000) {
-			throw new ExceedsFraudSuspicionLimitException();
-					
-		} 
-		if (transaction.getSourceAccount()!=null) {
-			if (transaction.getAmount()<0) {
-				throw new NegativeAmountException();
-			}
-			if (transaction.getAmount()>transaction.getSourceAccount().getBalance()) {
-				throw new ExceedsAvailableBalanceException();
-			}
-			if (transaction.getAmount()>1000) {
-				throw new ExceedsFraudSuspicionLimitException();
-			}
+		catch (ExceedsFraudSuspicionLimitException e) {
+			fraudQueue.addTransaction(transaction);
+			throw e;
 		}
-	
-	
 	}
 	
+	public static FraudQueue getFraudQueue() {
+		return fraudQueue;
+	}
 }
