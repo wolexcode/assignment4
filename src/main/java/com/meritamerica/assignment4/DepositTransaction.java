@@ -12,7 +12,7 @@ public class DepositTransaction extends Transaction {
 			ExceedsAvailableBalanceException, 
 			ExceedsFraudSuspicionLimitException {
 		if (getAmount()<0) throw new NegativeAmountException();
-		if (getAmount()>getFraudLimit()) throw new ExceedsFraudSuspicionLimitException();
+		if (getAmount()> getFraudLimit()) throw new ExceedsFraudSuspicionLimitException();
 		getTargetAccount().deposit(getAmount());
 	}
 }

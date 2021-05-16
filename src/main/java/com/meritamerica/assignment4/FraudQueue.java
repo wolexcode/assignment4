@@ -1,29 +1,23 @@
 package com.meritamerica.assignment4;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class FraudQueue {
-	List<Transaction> que;
-	
-	
+	private List<Transaction> queue;
 	
 	FraudQueue() {
-		this.que = new ArrayList<Transaction>();
-		
+		queue = new ArrayList<Transaction>();
+	}
+
+	public void addTransaction(Transaction transaction) {
 		
 	}
 	
-	public void addTransaction(Transaction transaction) {
-		que.add(transaction);
-			
-	}
 	public Transaction getTransaction() {
-		Transaction transaction = que.get(0);
-		que.remove(transaction);
+		Transaction transaction = queue.get(0);
+		queue.remove(transaction);
 		return transaction;
 		
 	}
-	
-	
+
 }
