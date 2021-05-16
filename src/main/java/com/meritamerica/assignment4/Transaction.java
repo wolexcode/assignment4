@@ -93,7 +93,11 @@ public abstract class Transaction {
 		java.util.Date accountOpenedOn = new SimpleDateFormat("dd/MM/yyyy").parse(input[3]);
 		
 		if (sourceAccount != null) {
-			return new TransferTransaction(sourceAccount, targetAccount, Amount, accountOpenedOn);
+			
+			TransferTransaction edition = new TransferTransaction(sourceAccount, targetAccount, Amount);
+			edition.setTransactionDate(accountOpenedOn);
+			return edition;
+			
 		}
 		if (Amount > 0) {
 			DepositTransaction transaction = new DepositTransaction(targetAccount, Amount);
@@ -101,7 +105,9 @@ public abstract class Transaction {
 			return transaction;
 			
 		}
-		return new WithdrawTransaction(sourceAccount, targetAccount, Amount, accountOpenedOn);
+		WithdrawTransaction withdrawTransaction = new WithdrawTransaction(targetAccount, Amount);
+		withdrawTransaction.setTransactionDate(accountOpenedOn);
+		return withdrawTransaction;
 	
 	}
 	public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException;

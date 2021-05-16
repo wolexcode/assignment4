@@ -34,7 +34,7 @@ public class MeritBank {
 		double highestResult = 0;
 		if (cdOfferings!=null) {
 			for (CDOffering x: cdOfferings) {
-				double xFutureValue = futureValue(depositAmount, x.getInterestRate(), x.getTerm());
+				double xFutureValue = recursiveFutureValue(depositAmount, x.getTerm(), x.getInterestRate());
 				if (xFutureValue > highestResult) {
 					highestResult = xFutureValue;
 					bestOffer = x;
@@ -51,7 +51,7 @@ public class MeritBank {
 		double secondHighestResult = 0;
 		if (cdOfferings!=null) {
 			for (CDOffering x: cdOfferings) {
-				double xFutureValue = futureValue(depositAmount, x.getInterestRate(), x.getTerm());
+				double xFutureValue = recursiveFutureValue(depositAmount, x.getTerm(), x.getInterestRate());
 				if (xFutureValue > highestResult) {
 					secondHighestResult = highestResult;
 					highestResult = xFutureValue;
@@ -222,4 +222,47 @@ public class MeritBank {
 		}
 		return null;
 	}
+	//Add the this methods and Existing futureValue methods that used to call Math.pow() should now call this method
+
+	public static double recursiveFutureValue(double amount, int years, double interestRate) {
+		
+		if (years==0)
+			return amount;
+		
+		double balance = amount+amount*interestRate;
+		
+		return recursiveFutureValue(balance, years-1, interestRate);
+		
+	}
+	
+	public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException {
+		if (transaction.getAmount()<0) {
+			
+			double withdrawAmount = -transaction.getAmount();
+			
+			if (withdrawAmount>transaction.getTargetAccount().getBalance()) {
+			throw	new ExceedsAvailableBalanceException();
+			
+			}	
+		
+		}
+		else if (transaction.getAmount()>1000) {
+			throw new ExceedsFraudSuspicionLimitException();
+					
+		} 
+		if (transaction.getSourceAccount()!=null) {
+			if (transaction.getAmount()<0) {
+				throw new NegativeAmountException();
+			}
+			if (transaction.getAmount()>transaction.getSourceAccount().getBalance()) {
+				throw new ExceedsAvailableBalanceException();
+			}
+			if (transaction.getAmount()>1000) {
+				throw new ExceedsFraudSuspicionLimitException();
+			}
+		}
+	
+	
+	}
+	
 }

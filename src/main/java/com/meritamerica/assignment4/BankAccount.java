@@ -3,13 +3,15 @@ package com.meritamerica.assignment4;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
-public class BankAccount {
+public abstract class BankAccount {
 
 	private double balance;
 	private double interestRate = 0;
 	private long accountNumber;
 	private java.util.Date accountOpenedOn;
+	private List<Transaction> arr;
 	
 	
 	public BankAccount(double openingBalance, double interestRate, java.util.Date accountOpenedOn) {
@@ -96,4 +98,17 @@ public class BankAccount {
 	public String writeToString() {
 		DateFormat df = new SimpleDateFormat("MM/dd/YYYY");
 		return accountNumber + "," + balance + "," + interestRate + "," + df.format(accountOpenedOn);}
+
+
+	public void addTransaction(Transaction transaction) {
+		arr.add(transaction);
+	}
+	public List<Transaction> getTransactions() {
+		return arr;
+		
+	}
+
+
+	
+	
 }
